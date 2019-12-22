@@ -1,12 +1,12 @@
 {
-    "name": "emutils",
+    "name": "ts-emutils",
     "version": "0.0.1",
     "description": "Typescript and C++ utility code for WebAssembly target",
     "main": "build/static/index.js",
     "types": "build/static/index.d.ts",
     "scripts": {
         "compile:ts": "        webpack --env=development",
-        "compile:ts:release": "webpack --env=production",
+        "compile:ts:release": "webpack --env=oduction",
         "compile:wasm": "        premake5 gmake2 && emmake make verbose=1 config=debug",
         "compile:wasm:release": "premake5 gmake2 && emmake make verbose=1 config=release",
         "clean:wasm": "rimraf build/wasm",

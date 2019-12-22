@@ -1,6 +1,6 @@
-# emutils
+# ts-emutils
 
-[![Npm](https://img.shields.io/npm/v/emutils?label=NPM%20PACKAGE&style=for-the-badge)](https://www.npmjs.com/package/emutils)
+[![Npm](https://img.shields.io/npm/v/ts-emutils?label=NPM%20PACKAGE&style=for-the-badge)](https://www.npmjs.com/package/ts-emutils)
 
 ## :zap: Rationale
 
