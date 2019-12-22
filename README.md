@@ -1,5 +1,7 @@
 # emutils
 
+[![Npm](https://img.shields.io/npm/v/emutils?label=NPM%20PACKAGE&style=for-the-badge)](https://www.npmjs.com/package/emutils)
+
 ## :zap: Rationale
 
 This simple npm package provides utility TypeScript and C++ code for `emscripten`

@@ -1,6 +1,6 @@
 {
-    "name": "ts-lexertl",
-    "version": "1.0.0",
+    "name": "emutils",
+    "version": "0.0.1",
     "description": "Typescript and C++ utility code for WebAssembly target",
     "main": "build/static/index.js",
     "types": "build/static/index.d.ts",
