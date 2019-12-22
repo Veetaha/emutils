@@ -3,7 +3,7 @@
 ## :zap: Rationale
 
 This simple npm package provides utility TypeScript and C++ code for `emscripten`
-WebAssembly toolchain. It designed for performance and simplicity.
+WebAssembly toolchain. It is designed for performance and simplicity.
 
 C++ library is header-only and dependency-free. Just include headers into your `pch.h` (precompiled header) or dependent C++ source file directly and that's it.
 
@@ -24,7 +24,7 @@ There are 2 modules exported by this package:
 
 ## `injected` module
 
-This is the a JavaScript file that you have to include after your emscripten
+This is a JavaScript file that you have to include after your emscripten
 glue code via `post-js` parameter when compiling with `em++` or `emcc`:
 ```
 --post-js ./node_modules/emutils/build/injected/index.js
@@ -102,7 +102,7 @@ property. The second one points to the original memory block, returned by the me
 allocator that manages emscripten's heap and it can be read via `.originalPtr`.
 This class is designed to save the original pointer that should be passed to 
 `Module._free()` when deallocating the memory, because the pointer returned by
-the allocator may not always be properly aligned we do allocate some extra memory
+the allocator may not always be properly aligned, so we do allocate some extra memory
 to ensure the alignment by our own means.
 
 The `Stack` is a bit simpler
@@ -113,8 +113,8 @@ const {Stack} = Module.Emu;
 
 const sp = Module.stackSave();
 try {
-    const i32Ptr: ptr<i32> = Stack.alloc<i32>(4, 42);
-    const f64Ptr: ptr<f64> = Stack.alloc<f64>(8, 112);
+    const i32Ptr: ptr<i32> = Stack.alloc<i32>(4, 42); // 42 integers
+    const f64Ptr: ptr<f64> = Stack.alloc<f64>(8, 112); // 112 floating points (doubles)
 } finally {
     // no need to free each pointer one by one
     // just restore the stack to its original position
@@ -128,7 +128,7 @@ try {
 
 There are a bunch of `write*()` and `read*()` (`*` is the type name) helper functions to
 write and read values from raw pointers accordingly. These all
-abstract away inreaction with `Module.HEAP*` array views and provide the
+abstract away interaction with `Module.HEAP*` array views and provide the
 ultimate type safety.
 
 There are also `writeArray*()` variants if you wonder.
@@ -137,8 +137,8 @@ There are also `writeArray*()` variants if you wonder.
 import {ptr, f32} from "emutils";
 const { writePtr, readPtr, writeI32, readI32, Heap } = Module.Emu;
 
-const i32Ptr = using (Heap.alloc<i32>(4, 1));
-const ptrPtr = using (Heap.alloc<ptr>(4, 1));
+const i32Ptr = using (Heap.alloc<i32>(4, 4)); // single 4-byte-aligned 4-byte integer
+const ptrPtr = using (Heap.alloc<ptr>(4, 4)); // single 8-byte-aligned 4-byte pointer
 
 writeI32(i32Ptr, 42);
 writePtr(ptrPtr, i32Ptr);
@@ -150,7 +150,7 @@ assert(readI32(readPtr(ptrPtr) as ptr<i32>) === 42); // double indirection
 
 ### `class Utf8StrArr`
 
-This class represens a linear fixed-with array of utf8 strings. It wraps a memory block which contains a representation of C++ `Emu::Utf8StrArr` class counterpart that is located in `include/emutils/utf8-str-arr.h`
+This class represents a linear fixed-with array of utf8 strings. It wraps a memory block which contains a representation of C++ `Emu::Utf8StrArr` class counterpart that is located in `include/emutils/utf8-str-arr.h`
 
 It currently provides almost no methods, because it is designed for performance and the way it is layout in memory is the single purpose of its creation.
 When you make `Utf8StrArr` you allocate only one memory block on WebAssembly heap.
@@ -177,22 +177,22 @@ Module.myCppFn(myStrArr.getRawPtr());
 
 void MyCppFn(const int32_t strArrPtr) {
     const Emu::Utf8StrArr strArr{strArrPtr};
-    const std::string_view firstString = strArr[0];
+    const std::string_view firstString = strArr[0]; // "my string1"
 }
 ```
 
-The API of C++ counterpart is very intuitive, it just mimics `std::vector<std::string_view>`.
+The API of C++ counterpart is very intuitive, it just mimics `std::array<std::string_view>`.
 
-### `class HeapArray`, `class StackArray` and C++ `Emu::RawArray`
+### `class HeapArray`, `class StackArray` and C++ `class Emu::RawArray`
 
 All these classes are similarly to `Utf8StrArr` just wrappers over a memory block.
 `HeapArray` should be explicitly freed via `.delete()` and `StackArray` is disposed
 via a call to `Module.stackRestore(sp)`.
 
-Both `HeapArray` and `StackArray` provide you with a simple and type safe interface
+Both `HeapArray<T>` and `StackArray<T>` provide you with a simple and type safe interface
 to allocating numeric arrays on emscripten's heap and stack.
 
-The give you a whole bunch of static `.alloc*(jsArray)` factory methods that convert
+They give you a whole bunch of static `.alloc*(jsArray)` factory methods that convert
 javascript vanilla arrays or typed arrays to `HeapArray` and `StackArray`.
 
 There is `.getRawPtr()` method that returns a pointer (`HeapPtr` from `HeapArray` and `ptr` from `StackArray`) to the underlying memory block.
@@ -223,7 +223,7 @@ void MyCppFn(const int32_t rawArrPtr) {
 }
 ```
 
-### `StdVector<T>` and `Emu::RegisterStdVector(name)`
+### `interface StdVector<T>` and `Emu::RegisterStdVector(name)`
 `Emu::RegisterStdVector` resides in the header file: `emutils/std/vector.h`
 
 This is a utility function that registers `std::vector<T>` types to use in your
@@ -248,3 +248,32 @@ These are only some utility types like `i8`, `i16`, `i32`, `u8`, `u16`, `u32`,
 `Delete` that represents a resource handle with `.delete()` method and `StdVector<>`
 which represents an interface of `std::vector<T>` that you will register from
 C++ side via `Emu::RegisterStdVector` from `emutils/std/vector.h`.
+
+
+## **Development prerequisites**
+
+### **Emscripten**
+
+Follow [these installation guidelines](https://emscripten.org/docs/getting_started/downloads.html)
+to install `emsdk` on you PC at some `/path/to/emsdk`.
+**Be sure not to skip `CMake` installation.**
+
+Add the following line to your `'~/.bashrc'` file in order to add `emscripten` tools
+to your `$PATH` on bash terminal startup:
+
+```sh
+source "/path/to/emsdk/emsdk_env.sh" &> /dev/null
+```
+
+### **Premake5**
+
+Download the latest verison of [`premake5`](https://premake.github.io/download.html) and put the executable at some `/path/to/premake5`
+
+
+Append the following line to your `~/.bashrc` 
+
+```sh
+export PATH="/path/to/premake5:$PATH"
+```
+
+`npm run build` - build the project
