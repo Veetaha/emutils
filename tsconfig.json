@@ -1,0 +1,45 @@
+{
+    "exclude": ["node_modules", "ts/**/*.test.ts", "ts/**/_*.ts" ],
+    "include": ["ts/**/*.ts" ],
+    "compilerOptions": {
+        "plugins": [
+            { "transform": "ts-nameof", "type": "raw" }
+        ],
+
+        "outDir": "build",
+    
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "es2019",
+    
+        "declaration":    true,
+        "declarationMap": true,
+        "sourceMap":      true,
+    
+        "allowJs":                      false,
+        "esModuleInterop":              true,
+        "resolveJsonModule":            true,
+        "allowSyntheticDefaultImports": true,
+    
+        "emitDecoratorMetadata":  true,
+        "experimentalDecorators": true,
+    
+        "strict":                           true,
+        "noUnusedLocals":                   true,
+        "noUnusedParameters":               true,
+        "noImplicitAny":                    true,
+        "noImplicitThis":                   true,
+        "noImplicitReturns":                true,
+        "noFallthroughCasesInSwitch":       true,
+        "strictBindCallApply":              true,
+        "strictFunctionTypes":              true,
+        "strictNullChecks":                 true,
+        "strictPropertyInitialization":     true,
+        "forceConsistentCasingInFileNames": true,
+        "noStrictGenericChecks":            false,
+        "allowUnreachableCode":             false,
+    
+        "alwaysStrict": true,
+        "pretty":       true
+    }
+}

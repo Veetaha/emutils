@@ -1,0 +1,4 @@
+{
+    "main": "../build/injected/index.js",
+    "types": "../build/injected/index.d.js"
+}

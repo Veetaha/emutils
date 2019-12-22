@@ -1,0 +1,4 @@
+{
+    "main": "../build/codegen/index.js",
+    "types": "../build/codegen/index.d.js"
+}
